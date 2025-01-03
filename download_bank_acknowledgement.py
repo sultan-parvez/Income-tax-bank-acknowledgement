@@ -20,11 +20,10 @@ def test_download_a_challan(data):
     firefox_options.headless = True  # Run in headless mode
 
     firefox_options.set_preference("print.always_print_silent", True)  # Silent printing
-    firefox_options.set_preference("print.show_print_progress", False)
-    firefox_options.set_preference("print.printer_Mozilla_Save_to_PDF.print_to_file", True)
-    firefox_options.set_preference("print.printer_Mozilla_Save_to_PDF.print_to_filename", "output.pdf")
-    firefox_options.set_preference("print.printer_Mozilla_Save_to_PDF.print_paper_name", "iso_a4")
-    firefox_options.set_preference("print.printer_Mozilla_Save_to_PDF.print_to_file", True)
+    firefox_options.set_preference("print_printer", "Microsoft Print to PDF")
+    firefox_options.set_preference("print.print_scaling", "0.8")  # Scale to 80%
+    firefox_options.set_preference("print.print_background", True)  # Include background colors and images
+    firefox_options.set_preference("print.print_orientation", 1)  # 1 for landscape, 0 for portrait
 
     # Disable headers and footers
     firefox_options.set_preference("print.print_headerleft", "")  # No left header
@@ -41,9 +40,12 @@ def test_download_a_challan(data):
 
     challan_year = driver.find_element(By.CSS_SELECTOR, '#txtChalanNoA')
     challan_year.send_keys(str(data["YEAR"]))
+    time.sleep(3)
 
     challan_id = driver.find_element(By.CSS_SELECTOR, '#txtChalanNoA1')
     challan_id.send_keys(str(data["CHALLAN"]))
+
+    time.sleep(2)
 
     verify_button = driver.find_element(By.CSS_SELECTOR, '#cmdVerify1')
     verify_button.click()
@@ -52,14 +54,8 @@ def test_download_a_challan(data):
     window_before = driver.window_handles[0]
     window_after = driver.window_handles[1]
     driver.switch_to.window(window_after)
-    time.sleep(10)
+    time.sleep(7)
 
-    # Use the DevTools Protocol to print the page as a PDF
-    print_settings = {
-        "paperWidth": 8.5,
-        "paperHeight": 11.0,
-        "printBackground": True
-    }
     driver.execute_script("window.print();")
 
     # Allow the print dialog to open and interact with it
