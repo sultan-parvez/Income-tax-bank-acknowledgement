@@ -1,2 +1,2 @@
-pytest download_a_challan_from_excel.py
+pytest download_bank_acknowledgement.py
 pause

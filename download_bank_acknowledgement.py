@@ -8,8 +8,10 @@ from selenium.webdriver.firefox.options import Options
 
 # Load test data from an Excel file
 def load_data_from_excel():
-    df = pd.read_excel("data.xlsx")  # Replace with your Excel file path
+    # Specify the dtype for the "CHALLAN" column as string
+    df = pd.read_excel("data.xlsx", dtype={"CHALLAN": str})  # Replace with your Excel file path
     return df.to_dict(orient="records")  # Convert the DataFrame to a list of dictionaries
+
 
 @pytest.mark.parametrize("data", load_data_from_excel())
 def test_download_a_challan(data):
@@ -38,19 +40,19 @@ def test_download_a_challan(data):
     driver.get("http://103.48.16.132/echalan/echalan_iframe.php")
 
     challan_year = driver.find_element(By.CSS_SELECTOR, '#txtChalanNoA')
-    challan_year.send_keys(data["YEAR"])
+    challan_year.send_keys(str(data["YEAR"]))
 
     challan_id = driver.find_element(By.CSS_SELECTOR, '#txtChalanNoA1')
-    challan_id.send_keys(data["CHALLAN"])
+    challan_id.send_keys(str(data["CHALLAN"]))
 
     verify_button = driver.find_element(By.CSS_SELECTOR, '#cmdVerify1')
     verify_button.click()
 
-    time.sleep(10)
 
     window_before = driver.window_handles[0]
     window_after = driver.window_handles[1]
     driver.switch_to.window(window_after)
+    time.sleep(10)
 
     # Use the DevTools Protocol to print the page as a PDF
     print_settings = {
