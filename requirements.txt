@@ -3,4 +3,3 @@ pytest
 pytest-html
 pandas
 openpyxl
-pyautogui
